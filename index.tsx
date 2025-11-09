@@ -1,16 +1,5 @@
-
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-
-const rootElement = document.getElementById('root');
-if (!rootElement) {
-  throw new Error("Could not find root element to mount to");
-}
-
-const root = ReactDOM.createRoot(rootElement);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+// This file is intentionally left blank.
+// All application logic has been moved into a single script block
+// in `index.html` to create a self-contained component that can
+// run reliably inside a Home Assistant iframe without issues
+// from blocked external resources or the need for a TSX transpiler.
