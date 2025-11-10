@@ -1,5 +1,4 @@
 {
   "name": "Öltank Füllstandsanzeige (Live)",
-  "description": "Eine Webanwendung zur Anzeige des Füllstands eines Öltanks. Sie ruft Live-Daten von einem Sensor-Endpunkt im Netzwerk ab und visualisiert den Inhalt mit einer Wellenanimation und einer Skala.",
-  "requestFramePermissions": []
+  "description": "Eine Webanwendung zur Anzeige des Füllstands eines Öltanks. Sie ruft Live-Daten von einem Sensor-Endpunkt im Netzwerk ab und visualisiert den Inhalt mit einer Wellenanimation und einer Skala."
 }
