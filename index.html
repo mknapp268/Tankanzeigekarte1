@@ -117,11 +117,6 @@
         .sm\:flex-row { flex-direction: row; }
       }
     </style>
-    <!-- Use reliable UMD builds for React -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <!-- Babel to transpile JSX in our single script file -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script type="importmap">
 {
   "imports": {
@@ -134,7 +129,15 @@
 </head>
 <body>
     <div id="root"></div>
-    <!-- Load the consolidated app script -->
-    <script type="text/babel" data-presets="react,typescript" src="/index.tsx"></script>
+    
+    <!-- Step 1: Load React and ReactDOM libraries first. These will be available globally. -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Step 2: Load the Babel transpiler to handle JSX and TypeScript in the browser. -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Step 3: Load and transpile our single, consolidated application file. -->
+    <script type="text/babel" data-presets="react,typescript" src="index.tsx"></script>
 </body>
 </html>

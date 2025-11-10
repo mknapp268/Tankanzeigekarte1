@@ -1,8 +1,8 @@
-// FIX: Add imports for React and ReactDOM to use them as modules.
-import React, { useMemo, useState } from 'react';
-import ReactDOM from 'react-dom/client';
+// All application code is in this file for simplicity and to avoid browser module issues.
 
-// All code is consolidated into one file to avoid browser module resolution issues.
+// FIX: Add imports for React and ReactDOM to resolve UMD global errors.
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 
 // --- CONSTANTS ---
 const TANK_LENGTH_CM = 150;
@@ -12,9 +12,9 @@ const SENSOR_MIN_DISTANCE_CM = 10; // Distance when tank is full
 const SENSOR_MAX_DISTANCE_CM = 115; // Distance when tank is effectively empty
 
 // --- HOOKS ---
-// FIX: The line `const { useMemo, useState } = React;` was removed as these are now imported directly.
 const useTankCalculation = (sensorDistanceCm) => {
-  const calculation = useMemo(() => {
+  // Uses the global React object loaded in index.html
+  const calculation = React.useMemo(() => {
     const a = TANK_WIDTH_CM / 2;
     const b = TANK_HEIGHT_CM / 2;
     const L = TANK_LENGTH_CM;
@@ -142,7 +142,7 @@ const ControlSlider = ({ value, onChange }) => {
 
 const App = () => {
   const initialSensorDistance = SENSOR_MIN_DISTANCE_CM + (SENSOR_MAX_DISTANCE_CM - SENSOR_MIN_DISTANCE_CM) / 2;
-  const [sensorDistance, setSensorDistance] = useState(initialSensorDistance);
+  const [sensorDistance, setSensorDistance] = React.useState(initialSensorDistance);
 
   const { volumeLiters, percentage, maxVolumeLiters } = useTankCalculation(sensorDistance);
 
