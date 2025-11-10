@@ -1,5 +1,5 @@
 import React from 'react';
-import { SENSOR_MIN_DISTANCE_CM, SENSOR_MAX_DISTANCE_CM } from '../constants';
+import { SENSOR_MIN_DISTANCE_CM, SENSOR_MAX_DISTANCE_CM } from '../constants.ts';
 
 interface ControlSliderProps {
   value: number;

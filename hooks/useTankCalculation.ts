@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { TANK_LENGTH_CM, TANK_WIDTH_CM, TANK_HEIGHT_CM } from '../constants';
+import { TANK_LENGTH_CM, TANK_WIDTH_CM, TANK_HEIGHT_CM } from '../constants.ts';
 
 /**
  * Calculates the volume of liquid in a horizontal elliptical tank.

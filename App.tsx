@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import Tank from './components/Tank';
-import InfoPanel from './components/InfoPanel';
-import ControlSlider from './components/ControlSlider';
-import { useTankCalculation } from './hooks/useTankCalculation';
-import { SENSOR_MIN_DISTANCE_CM, SENSOR_MAX_DISTANCE_CM } from './constants';
+import Tank from './components/Tank.tsx';
+import InfoPanel from './components/InfoPanel.tsx';
+import ControlSlider from './components/ControlSlider.tsx';
+import { useTankCalculation } from './hooks/useTankCalculation.ts';
+import { SENSOR_MIN_DISTANCE_CM, SENSOR_MAX_DISTANCE_CM } from './constants.ts';
 
 const App = () => {
   const initialSensorDistance = SENSOR_MIN_DISTANCE_CM + (SENSOR_MAX_DISTANCE_CM - SENSOR_MIN_DISTANCE_CM) / 2;

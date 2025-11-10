@@ -4,9 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Oil Tank Level Viewer</title>
-    <!-- Using external React scripts for a standard setup -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <style>
       /* --- Base & Fonts --- */
       body {
@@ -120,18 +117,24 @@
         .sm\:flex-row { flex-direction: row; }
       }
     </style>
+    <!-- Use reliable UMD builds for React -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel to transpile JSX in our single script file -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script type="importmap">
 {
   "imports": {
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
     "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/"
   }
 }
 </script>
 </head>
 <body>
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+    <!-- Load the consolidated app script -->
+    <script type="text/babel" data-presets="react,typescript" src="/index.tsx"></script>
 </body>
 </html>
