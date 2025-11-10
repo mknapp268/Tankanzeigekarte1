@@ -1,5 +1,5 @@
 import React from 'react';
-import { SENSOR_MIN_DISTANCE_CM, SENSOR_MAX_DISTANCE_CM } from '../constants.ts';
+import { SENSOR_MIN_DISTANCE_CM, SENSOR_MAX_DISTANCE_CM } from '../constants';
 
 interface ControlSliderProps {
   value: number;
@@ -8,9 +8,9 @@ interface ControlSliderProps {
 
 const ControlSlider = ({ value, onChange }: ControlSliderProps) => {
   return (
-    <div className="w-full max-w-lg pt-6">
-      <label htmlFor="sensor-slider" className="block text-sm font-medium text-slate-300 mb-2">
-        Simulate Sensor Distance ({value.toFixed(1)} cm)
+    <div className="w-full">
+      <label htmlFor="sensor-slider" className="block text-sm font-medium text-center text-slate-300 mb-2">
+        Sensor-Abstand Simulieren
       </label>
       <input
         id="sensor-slider"
@@ -23,8 +23,8 @@ const ControlSlider = ({ value, onChange }: ControlSliderProps) => {
         className="slider"
       />
        <div className="flex justify-between text-xs text-slate-400 mt-2">
-        <span>Full ({SENSOR_MIN_DISTANCE_CM} cm)</span>
-        <span>Empty ({SENSOR_MAX_DISTANCE_CM} cm)</span>
+        <span>Voll ({SENSOR_MIN_DISTANCE_CM} cm)</span>
+        <span>Leer ({SENSOR_MAX_DISTANCE_CM} cm)</span>
       </div>
     </div>
   );

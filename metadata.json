@@ -1,5 +1,5 @@
 {
-  "name": "Oil Tank Level Viewer",
-  "description": "A visually appealing web application to display the fill level of two elliptical oil tanks with a liquid wave simulation. Users can simulate the sensor reading to see the calculated volume and percentage.",
+  "name": "Öltank Füllstandsanzeige",
+  "description": "Eine Webanwendung zur Anzeige des Füllstands eines Öltanks. Sie visualisiert den Inhalt mit einer Wellenanimation und einer Skala und liest den Sensorwert aus einem URL-Parameter.",
   "requestFramePermissions": []
 }

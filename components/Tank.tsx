@@ -1,48 +1,86 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { TANK_WIDTH_CM, TANK_HEIGHT_CM } from '../constants';
 
 interface TankProps {
   percentage: number;
-  id: string;
+  liters: number;
+  tankNumber: number;
 }
 
-const Tank = ({ percentage, id }: TankProps) => {
-  // SVG dimensions
-  const svgWidth = 200;
-  const svgHeight = 150;
-  const rx = svgWidth / 2;
-  const ry = svgHeight / 2;
+// Constants for SVG rendering
+const SVG_WIDTH = 200;
+const SVG_HEIGHT = (SVG_WIDTH * TANK_HEIGHT_CM) / TANK_WIDTH_CM;
+const STROKE_WIDTH = 4;
+const RX = (SVG_WIDTH - STROKE_WIDTH) / 2;
+const RY = (SVG_HEIGHT - STROKE_WIDTH) / 2;
+const CX = SVG_WIDTH / 2;
+const CY = SVG_HEIGHT / 2;
 
-  const yPos = svgHeight - (svgHeight * percentage) / 100;
-  const waveHeight = 5;
+const Tank = ({ percentage, liters, tankNumber }: TankProps) => {
+  const liquidHeight = useMemo(() => {
+    return (percentage / 100) * (SVG_HEIGHT - STROKE_WIDTH);
+  }, [percentage]);
 
-  const wavePath1 = `M -${svgWidth*2},${yPos + waveHeight} C -${svgWidth*1.5},${yPos-waveHeight} -${svgWidth*0.5},${yPos-waveHeight} 0,${yPos+waveHeight} S ${svgWidth*0.5},${yPos+waveHeight*3} ${svgWidth},${yPos+waveHeight} S ${svgWidth*1.5},${yPos-waveHeight} ${svgWidth*2},${yPos+waveHeight} V ${svgHeight} H -${svgWidth*2} Z`;
-  const wavePath2 = `M -${svgWidth*2},${yPos + waveHeight} C -${svgWidth*1.5},${yPos+waveHeight*3} -${svgWidth*0.5},${yPos+waveHeight*3} 0,${yPos+waveHeight} S ${svgWidth*0.5},${yPos-waveHeight} ${svgWidth},${yPos+waveHeight} S ${svgWidth*1.5},${yPos+waveHeight*3} ${svgWidth*2},${yPos+waveHeight} V ${svgHeight} H -${svgWidth*2} Z`;
+  const wavePath = useMemo(() => {
+    const y = SVG_HEIGHT - STROKE_WIDTH / 2 - liquidHeight;
+    const waveAmplitude = 5;
+    const waveLength = 80;
+    
+    if (percentage < 1) return `M 0,${SVG_HEIGHT} H ${SVG_WIDTH}`;
+    if (percentage > 99) return `M 0,0 H ${SVG_WIDTH}`;
+
+    return `M ${STROKE_WIDTH/2},${y} 
+            q ${waveLength/4},-${waveAmplitude} ${waveLength/2},0 
+            t ${waveLength/2},0 
+            q ${waveLength/4},-${waveAmplitude} ${waveLength/2},0 
+            t ${waveLength/2},0
+            V ${SVG_HEIGHT} H ${STROKE_WIDTH/2} Z`;
+  }, [liquidHeight, percentage]);
 
   return (
-    <div className="relative w-80 md:w-96 h-64 md:h-72">
-      <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} className="w-full h-full">
+    <div className="flex flex-col items-center">
+      <h2 className="text-lg font-semibold text-slate-300 mb-2">Tank {tankNumber}</h2>
+      <svg width={SVG_WIDTH} height={SVG_HEIGHT} viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}>
         <defs>
-          <clipPath id={`tank-clip-${id}`}>
-            <ellipse cx={rx} cy={ry} rx={rx} ry={ry} />
+          <clipPath id={`tank-clip-${tankNumber}`}>
+            <ellipse cx={CX} cy={CY} rx={RX} ry={RY} />
           </clipPath>
+          <linearGradient id="liquid-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style={{ stopColor: '#38bdf8', stopOpacity: 1 }} />
+              <stop offset="100%" style={{ stopColor: '#0ea5e9', stopOpacity: 1 }} />
+          </linearGradient>
+          <style>
+            {`
+              @keyframes wave {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-80px); }
+              }
+              .wave-animation {
+                animation: wave 2s linear infinite;
+              }
+            `}
+          </style>
         </defs>
         
-        <g clipPath={`url(#tank-clip-${id})`}>
-          <rect x="0" y="0" width={svgWidth} height={svgHeight} className="fill-slate-800/50" />
-          <path d={wavePath1} className="fill-amber-300 animate-wave-flow" style={{ animationDuration: '10s' }} />
-          <path d={wavePath2} className="fill-amber-500/70 animate-wave-flow" style={{ animationDuration: '15s', animationDelay: '-5s' }} />
+        {/* Liquid */}
+        <g clipPath={`url(#tank-clip-${tankNumber})`}>
+          <rect x="0" y="0" width={SVG_WIDTH} height={SVG_HEIGHT} fill="#334155" />
+          <path
+            className="wave-animation"
+            d={wavePath}
+            fill="url(#liquid-gradient)"
+          />
         </g>
         
-        <ellipse cx={rx} cy={ry} rx={rx - 2} ry={ry - 2} fill="none" className="stroke-slate-600" strokeWidth="4" />
-        
-        <path d={`M ${rx/2} 15 A ${rx*1.2} ${ry*1.2} 0 0 1 ${rx*1.5} 15`} fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="8" />
+        {/* Tank Outline */}
+        <ellipse cx={CX} cy={CY} rx={RX} ry={RY} fill="none" stroke="#64748b" strokeWidth={STROKE_WIDTH} />
       </svg>
-      <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none">
-        <p className="text-2xl md:text-3xl font-bold text-white" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.7)' }}>
-          {percentage.toFixed(1)}%
-        </p>
+      <div className="text-center mt-4">
+        <p className="text-xl font-bold text-white">{liters.toFixed(0)} L</p>
+        <p className="text-sm text-slate-400">{percentage.toFixed(1)}%</p>
       </div>
     </div>
   );
 };
+
 export default Tank;

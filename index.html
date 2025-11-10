@@ -1,121 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Oil Tank Level Viewer</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tankanzeige</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-      /* --- Base & Fonts --- */
-      body {
-        background-color: #0f172a; /* bg-slate-900 */
-        margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-        color: #fff; /* text-white */
-      }
-      .font-bold { font-weight: 700; }
-      .font-semibold { font-weight: 600; }
-      .font-medium { font-weight: 500; }
-
-      /* --- Layout & Sizing --- */
-      .min-h-screen { min-height: 100vh; }
-      .w-full { width: 100%; }
-      .w-6 { width: 1.5rem; }
-      .h-6 { height: 1.5rem; }
-      .w-80 { width: 20rem; }
-      .h-64 { height: 16rem; }
-      .max-w-lg { max-width: 32rem; }
-      .p-4 { padding: 1rem; }
-      .p-6 { padding: 1.5rem; }
-      .pt-6 { padding-top: 1.5rem; }
-      .mt-2 { margin-top: 0.5rem; }
-      .mb-2 { margin-bottom: 0.5rem; }
-      .mb-4 { margin-bottom: 1rem; }
-      .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem; }
-      
-      /* --- Flex & Grid --- */
-      .flex { display: flex; }
-      .flex-col { flex-direction: column; }
-      .items-center { align-items: center; }
-      .justify-center { justify-content: center; }
-      .justify-start { justify-content: flex-start; }
-      .justify-between { justify-content: space-between; }
-      .gap-4 { gap: 1rem; }
-      .gap-8 { gap: 2rem; }
-      .grid { display: grid; }
-      .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
-
-      /* --- Borders & Shadows --- */
-      .border { border-width: 1px; }
-      .border-4 { border-width: 4px; }
-      .border-red-700 { border-color: #b91c1c; }
-      .rounded-lg { border-radius: 0.5rem; }
-      .rounded-2xl { border-radius: 1rem; }
-      .rounded-full { border-radius: 9999px; }
-      .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
-
-      /* --- Colors & Backgrounds --- */
-      .bg-slate-700\/70 { background-color: rgba(51, 65, 85, 0.7); }
-      .bg-slate-800\/50 { background-color: rgba(30, 41, 59, 0.5); }
-      .bg-slate-900 { background-color: #0f172a; }
-      .bg-red-900\/50 { background-color: rgba(127, 29, 29, 0.5); }
-      .text-amber-300 { color: #fcd34d; }
-      .text-red-300 { color: #fca5a5; }
-      .text-slate-300 { color: #cbd5e1; }
-      .text-slate-400 { color: #94a3b8; }
-      .fill-amber-300 { fill: #fcd34d; }
-      .fill-amber-500\/70 { fill: rgba(245, 158, 11, 0.7); }
-      .fill-slate-800\/50 { fill: rgba(30, 41, 59, 0.5); }
-      .stroke-slate-600 { stroke: #475569; }
-      
-      /* --- Text & Sizing --- */
-      .text-center { text-align: center; }
-      .text-sm { font-size: 0.875rem; }
-      .text-2xl { font-size: 1.5rem; }
-
-      /* --- Transitions & Animations --- */
-      @keyframes wave-flow {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
-      }
-      .animate-wave-flow {
-        animation: wave-flow linear infinite;
-      }
-      
-      /* --- Other --- */
-      .relative { position: relative; }
-      .absolute { position: absolute; }
-      .left-0 { left: 0; }
-      .top-0 { top: 0; }
-      .backdrop-blur-sm { backdrop-filter: blur(4px); }
-      .appearance-none { appearance: none; }
-      .cursor-pointer { cursor: pointer; }
-      .pointer-events-none { pointer-events: none; }
-      
-      /* --- Component Specific --- */
-      .main-card { width: 100%; max-width: 80rem; margin-left: auto; margin-right: auto; background-color: rgba(30, 41, 59, 0.5); border-radius: 1rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); backdrop-filter: blur(4px); border: 1px solid #334155; }
-      .info-display { padding: 1rem; border-radius: 0.5rem; background-color: rgba(51, 65, 85, 0.7); }
-      .warning-box { padding: 1rem; border-radius: 0.5rem; background-color: rgba(127, 29, 29, 0.5); border: 1px solid #b91c1c; color: #fca5a5; display: flex; align-items: center; gap: 0.75rem; }
-      .slider { width: 100%; height: 0.5rem; background-color: #334155; border-radius: 0.5rem; appearance: none; cursor: pointer; }
-      .slider::-webkit-slider-thumb { appearance: none; width: 1rem; height: 1rem; background: #fcd34d; border-radius: 9999px; cursor: pointer; }
-      .slider::-moz-range-thumb { width: 1rem; height: 1rem; background: #fcd34d; border-radius: 9999px; cursor: pointer; border: none; }
-
-      /* --- Responsive --- */
-      @media (min-width: 1024px) { /* lg: */
-        .lg\:flex-row { flex-direction: row; }
-        .lg\:gap-12 { gap: 3rem; }
-        .lg\:w-1\/2 { width: 50%; }
-        .lg\:p-12 { padding: 3rem; }
-      }
-      @media (min-width: 768px) { /* md: */
-        .md\:text-3xl { font-size: 1.875rem; }
-        .md\:text-left { text-align: left; }
-        .md\:w-96 { width: 24rem; }
-        .md\:h-72 { height: 18rem; }
-      }
-      @media (min-width: 640px) { /* sm: */
-        .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-        .sm\:flex-row { flex-direction: row; }
-      }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: transparent;
+        }
     </style>
 <script type="importmap">
 {
@@ -129,15 +26,235 @@
 </head>
 <body>
     <div id="root"></div>
-    
-    <!-- Step 1: Load React and ReactDOM libraries first. These will be available globally. -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    
-    <!-- Step 2: Load the Babel transpiler to handle JSX and TypeScript in the browser. -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Step 3: Load and transpile our single, consolidated application file. -->
-    <script type="text/babel" data-presets="react,typescript" src="index.tsx"></script>
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // --- Start: utils/tankCalculator.ts ---
+        const TANK_CONSTANTS = {
+            tankBreite: 188,
+            tankTiefe: 72,
+            tankHoehe: 160,
+            maxInhaltProTank: 1500,
+            warnGrenzeLiter: 350,
+        };
+
+        function berechneTankinhalt(fuellhoehe) {
+            if (fuellhoehe > TANK_CONSTANTS.tankHoehe) fuellhoehe = TANK_CONSTANTS.tankHoehe;
+            if (fuellhoehe < 0) fuellhoehe = 0;
+            const a = TANK_CONSTANTS.tankBreite / 2;
+            const b = TANK_CONSTANTS.tankTiefe / 2;
+            const volumenProTank_cm3 = Math.PI * a * b * fuellhoehe;
+            const volumenGesamt_l = (volumenProTank_cm3 * 2) / 1000;
+            return Math.round(volumenGesamt_l * 100) / 100;
+        }
+
+        function getFillHeightForLiters(liters) {
+            if (liters <= 0) return 0;
+            const maxLiters = berechneTankinhalt(TANK_CONSTANTS.tankHoehe);
+            if (liters >= maxLiters) return TANK_CONSTANTS.tankHoehe;
+            
+            const a = TANK_CONSTANTS.tankBreite / 2;
+            const b = TANK_CONSTANTS.tankTiefe / 2;
+            const targetVolumeCm3 = (liters / 2) * 1000;
+            const fillHeight = targetVolumeCm3 / (Math.PI * a * b);
+            return fillHeight;
+        }
+
+        function calculateTankValues(sensorDistance) {
+            const distance = parseFloat(sensorDistance);
+            if (isNaN(distance)) {
+                return {
+                    fuellhoehe: 0,
+                    literGesamt: 0,
+                    prozent: 0,
+                    warnung: true,
+                    literProTank: 0,
+                };
+            }
+            const fuellhoehe = Math.round((TANK_CONSTANTS.tankHoehe - distance) * 100) / 100;
+            if (fuellhoehe < 0 || fuellhoehe > TANK_CONSTANTS.tankHoehe) {
+                return { fuellhoehe: Math.max(0, fuellhoehe), literGesamt: 0, prozent: 0, warnung: true, literProTank: 0 };
+            }
+            const literGesamt = berechneTankinhalt(fuellhoehe);
+            const literProTank = literGesamt / 2;
+            const prozent = (literProTank / TANK_CONSTANTS.maxInhaltProTank) * 100;
+            const warnung = literGesamt < TANK_CONSTANTS.warnGrenzeLiter;
+            return {
+                fuellhoehe: Math.max(0, fuellhoehe),
+                literGesamt,
+                prozent: Math.max(0, Math.min(100, prozent)),
+                warnung,
+                literProTank,
+            };
+        }
+        // --- End: utils/tankCalculator.ts ---
+
+        // --- Start: utils/math.ts ---
+        function getTankFillHeight(percentage) {
+            const radius = 100;
+            const targetArea = percentage / 100 * Math.PI * radius * radius;
+            if (targetArea <= 0) return 2 * radius;
+            if (targetArea >= Math.PI * radius * radius) return 0;
+
+            let low = 0;
+            let high = 2 * radius;
+            for (let i = 0; i < 50; i++) {
+                const midHeight = (low + high) / 2;
+                const h = 2 * radius - midHeight;
+                const area = radius * radius * Math.acos((radius - h) / radius) - (radius - h) * Math.sqrt(2 * radius * h - h * h);
+                if (area < targetArea) {
+                    high = midHeight;
+                } else {
+                    low = midHeight;
+                }
+            }
+            return (low + high) / 2;
+        }
+        // --- End: utils/math.ts ---
+
+        // --- Start: components/WavePath.tsx ---
+        function WavePath({ y, color, opacity }) {
+            const d = `M 0 ${y} C 100 ${y - 10}, 150 ${y + 10}, 250 ${y} S 400 ${y - 10}, 500 ${y}`;
+            return <path d={d} stroke={color} fill="transparent" strokeWidth="3" opacity={opacity} />;
+        }
+        // --- End: components/WavePath.tsx ---
+
+        // --- Start: components/OilTankCard.tsx ---
+        function OilTankCard({ fillPercentage, fillHeight, totalLiters }) {
+            const tankWidth = 500;
+            const tankHeight = 200;
+            const yPos = getTankFillHeight(fillPercentage);
+
+            const scaleItems = [0, 500, 1000, 1500, 2000, 2500, 3000];
+            const maxTankHeightCm = TANK_CONSTANTS.tankHoehe;
+
+            function getIndicatorY() {
+                 if (fillHeight <= 0) return tankHeight;
+                 if (fillHeight >= maxTankHeightCm) return 0;
+                 const indicatorPercentage = fillHeight / maxTankHeightCm;
+                 return tankHeight - (indicatorPercentage * tankHeight);
+            }
+
+            return (
+                <div className="relative w-full max-w-2xl mx-auto">
+                    <svg viewBox={`0 -10 ${tankWidth + 80} ${tankHeight + 20}`} className="w-full">
+                        <defs>
+                            <clipPath id="tankClip">
+                                <path d={`M 50 0 H ${tankWidth - 50} C ${tankWidth} 0, ${tankWidth} ${tankHeight}, ${tankWidth - 50} ${tankHeight} H 50 C 0 ${tankHeight}, 0 0, 50 0 Z`} />
+                            </clipPath>
+                             <linearGradient id="tankGloss" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="white" stopOpacity="0.4" />
+                                <stop offset="20%" stopColor="white" stopOpacity="0.0" />
+                                <stop offset="80%" stopColor="black" stopOpacity="0.0" />
+                                <stop offset="100%" stopColor="black" stopOpacity="0.2" />
+                            </linearGradient>
+                        </defs>
+                        
+                        {/* 3D Extrusion Effect */}
+                        <path d={`M 52 2 H ${tankWidth - 48} C ${tankWidth+2} 2, ${tankWidth+2} ${tankHeight+2}, ${tankWidth - 48} ${tankHeight+2} H 52 C 2 ${tankHeight+2}, 2 2, 52 2 Z`} fill="#6b7280" />
+
+                        {/* Tank Body */}
+                        <path d={`M 50 0 H ${tankWidth - 50} C ${tankWidth} 0, ${tankWidth} ${tankHeight}, ${tankWidth - 50} ${tankHeight} H 50 C 0 ${tankHeight}, 0 0, 50 0 Z`} fill="#d1d5db" />
+
+                        {/* Liquid */}
+                        <g clipPath="url(#tankClip)">
+                            <rect x="0" y={yPos} width={tankWidth} height={tankHeight - yPos} fill="#f97316" />
+                            <g className="animate-wave1">
+                                <WavePath y={yPos} color="#f97316" opacity="0.6" />
+                            </g>
+                             <g className="animate-wave2">
+                                <WavePath y={yPos} color="#f97316" opacity="0.4" />
+                            </g>
+                        </g>
+                        
+                        {/* Tank Outline and Gloss */}
+                        <path d={`M 50 0 H ${tankWidth - 50} C ${tankWidth} 0, ${tankWidth} ${tankHeight}, ${tankWidth - 50} ${tankHeight} H 50 C 0 ${tankHeight}, 0 0, 50 0 Z`} fill="url(#tankGloss)" stroke="#9ca3af" strokeWidth="3" />
+                    
+                        {/* Scale */}
+                        <g transform={`translate(${tankWidth + 20}, 0)`}>
+                           <line x1="0" y1="0" x2="0" y2={tankHeight} stroke="#9ca3af" strokeWidth="2" />
+                            {scaleItems.map(liter => {
+                                const y = tankHeight - (getFillHeightForLiters(liter) / maxTankHeightCm * tankHeight);
+                                return (
+                                    <g key={liter}>
+                                        <line x1="-5" y1={y} x2="5" y2={y} stroke="#9ca3af" strokeWidth="2" />
+                                        <text x="15" y={y + 4} fill="#4b5563" fontSize="14" textAnchor="start">{liter}</text>
+                                    </g>
+                                );
+                            })}
+                             {/* Indicator */}
+                            <g transform={`translate(0, ${getIndicatorY()})`}>
+                                <path d="M 0 0 L 10 -5 L 10 5 Z" fill="#d97706" />
+                            </g>
+                        </g>
+
+                    </svg>
+                </div>
+            );
+        }
+        // --- End: components/OilTankCard.tsx ---
+
+        // --- Start: App.tsx ---
+        function App() {
+            const [tankValues, setTankValues] = useState(calculateTankValues('160')); // Default to empty
+
+            useEffect(() => {
+                const params = new URLSearchParams(window.location.search);
+                const sensorDistance = params.get('sensor_distance');
+                if (sensorDistance) {
+                    setTankValues(calculateTankValues(sensorDistance));
+                } else {
+                     setTankValues(calculateTankValues('80')); // Default value if no param
+                }
+            }, []);
+
+            const { fuellhoehe, literGesamt, prozent, warnung } = tankValues;
+
+            return (
+                <div className="min-h-screen bg-transparent flex flex-col items-center justify-center p-4">
+                    <div className="w-full max-w-2xl bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-200">
+                        <h1 className="text-2xl font-bold text-gray-800 text-center mb-2">Öltank Füllstand</h1>
+                        <OilTankCard 
+                            fillPercentage={prozent}
+                            fillHeight={fuellhoehe}
+                            totalLiters={literGesamt}
+                        />
+                        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                            <div className={`p-4 rounded-lg ${warnung ? 'bg-red-100' : 'bg-green-100'}`}>
+                                <p className="text-sm font-semibold text-gray-500">Inhalt Gesamt</p>
+                                <p className={`text-2xl font-bold ${warnung ? 'text-red-700' : 'text-green-700'}`}>{literGesamt.toFixed(1)} L</p>
+                            </div>
+                            <div className="p-4 bg-blue-100 rounded-lg">
+                                <p className="text-sm font-semibold text-gray-500">Füllhöhe</p>
+                                <p className="text-2xl font-bold text-blue-700">{fuellhoehe.toFixed(1)} cm</p>
+                            </div>
+                            <div className="p-4 bg-indigo-100 rounded-lg">
+                                <p className="text-sm font-semibold text-gray-500">Füllstand</p>
+                                <p className="text-2xl font-bold text-indigo-700">{prozent.toFixed(1)} %</p>
+                            </div>
+                        </div>
+                         {warnung && (
+                            <div className="mt-4 p-3 bg-red-500 text-white text-center rounded-lg font-semibold">
+                                Warnung: Füllstand niedrig!
+                            </div>
+                        )}
+                    </div>
+                    <style>{`
+                        @keyframes wave {
+                            0% { transform: translateX(0); }
+                            100% { transform: translateX(-250px); }
+                        }
+                        .animate-wave1 { animation: wave 8s linear infinite; }
+                        .animate-wave2 { animation: wave 12s linear infinite reverse; }
+                    `}</style>
+                </div>
+            );
+        }
+
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+        // --- End: App.tsx ---
+    </script>
 </body>
 </html>

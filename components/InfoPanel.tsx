@@ -3,38 +3,35 @@ import React from 'react';
 interface InfoPanelProps {
   sensorDistance: number;
   totalVolume: number;
-  totalPercentage: number;
   maxVolume: number;
+  percentage: number;
 }
 
-const InfoPanel = ({ sensorDistance, totalVolume, totalPercentage, maxVolume }: InfoPanelProps) => {
-  const isLowLevel = totalPercentage < 20;
-  const isCriticallyLow = totalPercentage < 10;
-  
+const InfoRow = ({ label, value, unit }: { label: string; value: string; unit: string }) => (
+  <div className="flex justify-between items-baseline p-4 bg-slate-700 rounded-lg">
+    <p className="text-base text-slate-300">{label}</p>
+    <div>
+      <span className="text-xl font-semibold text-white">{value}</span>
+      <span className="text-sm text-slate-400 ml-1">{unit}</span>
+    </div>
+  </div>
+);
+
+const InfoPanel = ({ sensorDistance, totalVolume, maxVolume, percentage }: InfoPanelProps) => {
+  const isLowLevel = percentage < 20;
+
   return (
-    <div className="w-full max-w-lg space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-        <div className="info-display">
-          <p className="text-sm text-slate-400">Sensor Reading</p>
-          <p className="text-2xl font-semibold text-amber-300">{sensorDistance.toFixed(1)} cm</p>
-        </div>
-        <div className="info-display">
-          <p className="text-sm text-slate-400">Total Volume</p>
-          <p className="text-2xl font-semibold">{totalVolume.toFixed(0)} L</p>
-        </div>
-        <div className="info-display">
-          <p className="text-sm text-slate-400">Total Capacity</p>
-          <p className="text-2xl font-semibold">{maxVolume.toFixed(0)} L</p>
-        </div>
+    <div className="w-full">
+      <div className="info-panel-grid">
+        <InfoRow label="Sensorabstand" value={sensorDistance.toFixed(1)} unit="cm" />
+        <InfoRow label="Gesamtvolumen" value={totalVolume.toFixed(0)} unit="L" />
+        <InfoRow label="Gesamtkapazität" value={maxVolume.toFixed(0)} unit="L" />
       </div>
+
       {isLowLevel && (
-        <div className={`warning-box ${isCriticallyLow ? 'border-red-700 bg-red-900/50' : ''}`}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-          <p className="font-medium">
-            {isCriticallyLow ? 'Critically Low Oil Level!' : 'Low Oil Level'} - {totalPercentage.toFixed(1)}% remaining.
-          </p>
+        <div className="mt-4 p-4 rounded-lg warning-box text-red-300 border-red-500 bg-red-900/20 text-center">
+          <p className="font-semibold">Warnung: Niedriger Füllstand!</p>
+          <p className="text-sm">Der Füllstand ist unter 20% gefallen.</p>
         </div>
       )}
     </div>
