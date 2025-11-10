@@ -197,16 +197,41 @@
         // --- Start: App.tsx ---
         function App() {
             const [tankValues, setTankValues] = useState(calculateTankValues('160')); // Default to empty
+            const [error, setError] = useState(null);
+
+            // Diese URL müssen Sie an die IP-Adresse Ihres Sensors anpassen
+            const SENSOR_API_URL = 'http://DEINE_ESP_IP_ADRESSE/api/sensor-data';
 
             useEffect(() => {
-                const params = new URLSearchParams(window.location.search);
-                const sensorDistance = params.get('sensor_distance');
-                if (sensorDistance) {
-                    setTankValues(calculateTankValues(sensorDistance));
-                } else {
-                     setTankValues(calculateTankValues('80')); // Default value if no param
-                }
-            }, []);
+                const fetchData = async () => {
+                    try {
+                        const response = await fetch(SENSOR_API_URL);
+                        if (!response.ok) {
+                            throw new Error('Netzwerk-Antwort war nicht in Ordnung');
+                        }
+                        const data = await response.json();
+                        // Erwartet ein JSON-Objekt wie: {"sensor_distance": 85.3}
+                        if (data && typeof data.sensor_distance !== 'undefined') {
+                            setTankValues(calculateTankValues(data.sensor_distance));
+                            setError(null);
+                        } else {
+                             throw new Error('Ungültiges Datenformat vom Sensor');
+                        }
+                    } catch (error) {
+                        console.error("Fehler beim Abrufen der Sensordaten:", error);
+                        setError("Sensor nicht erreichbar");
+                    }
+                };
+
+                // Daten sofort beim Laden abrufen
+                fetchData();
+
+                // Intervall einrichten, um die Daten alle 5 Sekunden abzurufen
+                const intervalId = setInterval(fetchData, 5000);
+
+                // Aufräumen, wenn die Komponente verlassen wird
+                return () => clearInterval(intervalId);
+            }, []); // Leeres Array bedeutet, dass dieser Effekt nur einmal beim Mounten ausgeführt wird
 
             const { fuellhoehe, literGesamt, prozent, warnung } = tankValues;
 
@@ -233,9 +258,14 @@
                                 <p className="text-2xl font-bold text-indigo-700">{prozent.toFixed(1)} %</p>
                             </div>
                         </div>
-                         {warnung && (
+                         {warnung && !error && (
                             <div className="mt-4 p-3 bg-red-500 text-white text-center rounded-lg font-semibold">
                                 Warnung: Füllstand niedrig!
+                            </div>
+                        )}
+                        {error && (
+                            <div className="mt-4 p-3 bg-yellow-500 text-black text-center rounded-lg font-semibold">
+                                {error}
                             </div>
                         )}
                     </div>
